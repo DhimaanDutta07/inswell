@@ -6,6 +6,11 @@ import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const API_BASE_URL = import.meta.env.VITE_BASE_URL;
+if (!API_BASE_URL) {
+  throw new Error('VITE_BASE_URL is not defined. Please set it in your .env file or Vercel environment variables.');
+}
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<Role | null>(null);
@@ -330,19 +335,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Add new function to send OTP
   const sendOTP = async (phone: string) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/send-otp`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone }),
       });
-      
+
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({ error: 'Unknown server error' }));
         // Extract the actual error message from the response
         const errorMessage = errorData.message || errorData.error || 'Failed to send OTP';
         throw new Error(errorMessage);
       }
-      
+
       return await response.json();
     } catch (error) {
       console.error('Send OTP error:', error);
@@ -353,7 +358,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Add new function to verify OTP
   const verifyOTP = async (phone: string, otp: string) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/verify-otp`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone, otp }),

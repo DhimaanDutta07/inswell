@@ -74,8 +74,10 @@ function setupMiddleware(app: Express): void {
 // File download endpoint
 app.get('/api/files/material-receipts/images/:fileName', (req: Request, res: Response): void => {
   const fileName: string = req.params.fileName as string;
-  const filePath: string = path.join(process.env.STORAGE_DIR || '/var/www/html/uploads', 'material-receipts', 'images', fileName);
-  
+  // Use /tmp/uploads on Vercel, fallback to env var or local path
+  const storageDir = process.env.STORAGE_DIR || (process.env.VERCEL ? '/tmp/uploads' : '/var/www/html/uploads');
+  const filePath: string = path.join(storageDir, 'material-receipts', 'images', fileName);
+
   if (!fs.existsSync(filePath)) {
       console.log("File not found:", filePath);
       res.status(404).json({ error: "File not found" });
@@ -83,30 +85,38 @@ app.get('/api/files/material-receipts/images/:fileName', (req: Request, res: Res
   }
 
   const contentType: string = 'application/octet-stream';
-  
+
   res.set('X-Sendfile', filePath);
   res.set('Content-Type', contentType);
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
-  
+
   // Force download
   res.set('Content-Disposition', `attachment; filename="${fileName}"`);
-  
+
   res.end();
 });
 
   // Basic middleware
   const origin = process.env.FRONTEND_API || process.env.LOCALHOST_API;
-  app.use(cors({ 
-    origin: [
-      "https://insurewelladvisory.in",
-      "https://policy.mindrops.com",
-      "https://policy-management-frontend-coral.vercel.app", // ✅ production frontend
-      /https:\/\/policy-management-frontend.*\.vercel\.app$/, // ✅ all Vercel preview deployments
-      "http://localhost:5173",
-      "http://localhost:3001",
-      "http://192.168.1.15:3001"
-    ],
+  app.use(cors({
+    origin: (originReq, callback) => {
+      // Allow no-origin (same-origin requests, curl, etc.)
+      if (!originReq) return callback(null, true);
+      // Allow known domains and any Vercel preview deployment
+      const allowed = [
+        "https://insurewelladvisory.in",
+        "https://policy.mindrops.com",
+        "https://policy-management-frontend-coral.vercel.app",
+        "http://localhost:5173",
+        "http://localhost:3001",
+        "http://192.168.1.15:3001",
+      ];
+      if (allowed.includes(originReq) || originReq.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
+      callback(new Error('Not allowed by CORS'));
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization", "role"],
     credentials: true,

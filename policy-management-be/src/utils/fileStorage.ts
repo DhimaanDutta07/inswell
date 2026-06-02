@@ -22,17 +22,19 @@ async function ensureDirectoriesExist() {
     console.log(`Ensuring directory exists: ${IMAGES_DIR}`);
     await mkdir(IMAGES_DIR, { recursive: true });
     console.log(`Directory created/confirmed: ${IMAGES_DIR}`);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating storage directories:', error);
-    console.error('Full error:', error);
-    throw error;
+    // On Vercel, /tmp is the only writable directory. If it fails, log but don't crash -
+    // the directory will be created on-demand when files are actually uploaded.
+    if (!process.env.VERCEL) {
+      throw error;
+    }
   }
 }
 
 // Ensure directories exist on startup
 ensureDirectoriesExist().catch(error => {
   console.error('Failed to create storage directories:', error);
-  // Don't exit on Vercel - /tmp may not exist at startup but will be created on demand
   if (!process.env.VERCEL) {
     process.exit(1);
   }
