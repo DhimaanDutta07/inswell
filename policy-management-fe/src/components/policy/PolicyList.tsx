@@ -186,6 +186,7 @@ const PolicyList: React.FC<PolicyListProps> = ({
   loading: externalLoading, 
   onViewPolicy, 
   onEditPolicy, 
+  onDeletePolicy,
   onCreatePolicy 
 }) => {
   const navigate = useNavigate();
@@ -797,22 +798,26 @@ const PolicyList: React.FC<PolicyListProps> = ({
     fetchPolicies(); // Refresh the list
   };
 
-  const handleConfirmDelete = async () => {
+  const confirmDeletePolicy = async () => {
     if (!policyToDelete) return;
-    
+
     try {
-      const token = localStorage.getItem("authToken");
-      await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/policies/${policyToDelete.id}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      if (onDeletePolicy) {
+        await onDeletePolicy(policyToDelete.id);
+      } else {
+        const token = localStorage.getItem("authToken");
+        await axios.delete(
+          `${import.meta.env.VITE_BASE_URL}/api/v1/policies/${policyToDelete.id}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      }
       toast.success("Policy deleted successfully");
       policiesCache.current = [];
       setDeleteDialogOpen(false);
       setPolicyToDelete(null);
       fetchPolicies();
-    } catch (err: any) {
-      const status = err.response?.status;
+    } catch (err: unknown) {
+      const status = axios.isAxiosError(err) ? err.response?.status : undefined;
       if (status === 404) {
         toast.error("Policy no longer exists. Refreshing list...");
         fetchPolicies();
@@ -820,7 +825,6 @@ const PolicyList: React.FC<PolicyListProps> = ({
         setPolicyToDelete(null);
       } else if (status === 500) {
         toast.error("Failed to delete policy. Please try again.");
-        // Keep dialog open on 500 error
       } else {
         toast.error("Failed to delete policy");
         setDeleteDialogOpen(false);
@@ -1602,7 +1606,7 @@ const PolicyList: React.FC<PolicyListProps> = ({
                 </Button>
                 <Button
                   variant="destructive"
-                  onClick={handleConfirmDelete}
+                  onClick={confirmDeletePolicy}
                   className="bg-red-600 hover:bg-red-700 text-white"
                 >
                   Delete
