@@ -794,35 +794,20 @@ export const policyRepository = {
     if (where.type && typeof where.type === 'string') {
       where.type = { name: where.type };
     }
-<<<<<<< HEAD
-    // Show only current (leaf) policies — hides superseded rows from legacy transition chains
+    // Only show leaf policies (latest in each chain) — hides superseded rows from legacy transition chains.
     const listWhere: Prisma.PolicyWhereInput = {
-=======
-    // Only show leaf policies (latest in each chain): exclude policies that have
-    // been superseded by a renewal, portability, or migration child.
-    // History is still accessible via the History button on the new policy.
-    const leafWhere: Prisma.PolicyWhereInput = {
->>>>>>> ad557664d3cc781693a63d983c62275dcb770300
       ...where,
       children_policies: { none: {} },
     };
     const [data, total] = await Promise.all([
       prisma.policy.findMany({
-<<<<<<< HEAD
         where: listWhere,
-=======
-        where: leafWhere,
->>>>>>> ad557664d3cc781693a63d983c62275dcb770300
         orderBy: { created_at: 'desc' },
         skip,
         take,
         include: POLICY_LIST_INCLUDE,
       }),
-<<<<<<< HEAD
       prisma.policy.count({ where: listWhere }),
-=======
-      prisma.policy.count({ where: leafWhere }),
->>>>>>> ad557664d3cc781693a63d983c62275dcb770300
     ]);
 
     // Compute chain depth + ancestor history for each policy via a single recursive CTE.

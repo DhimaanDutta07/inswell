@@ -21,17 +21,6 @@ type RuleRow = {
   commissionPercent: number;
 };
 
-const AGE_BANDS = ["LESS_THAN_60", "GREATER_THAN_60"] as const;
-
-function ruleKey(
-  category: string,
-  status: string,
-  deductible: string,
-  age: string
-) {
-  return `${category}|${status}|${deductible}|${age}`;
-}
-
 const CommissionRulePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);

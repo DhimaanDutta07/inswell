@@ -2,9 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import {
   History,
-  ArrowRight,
   RefreshCw,
-  Building2,
   Shield,
   AlertCircle,
   FileText,
@@ -83,45 +81,6 @@ const PolicyHistorySheet: React.FC<PolicyHistorySheetProps> = ({
     }).format(amount);
   };
 
-  const getTransitionIcon = (transitionType: string) => {
-    switch (transitionType) {
-      case "RENEWAL":
-        return <RefreshCw className="w-4 h-4 text-blue-600" />;
-      case "MIGRATION":
-        return <Building2 className="w-4 h-4 text-purple-600" />;
-      case "PORTABILITY":
-        return <ArrowRight className="w-4 h-4 text-orange-600" />;
-      default:
-        return <Shield className="w-4 h-4 text-gray-600" />;
-    }
-  };
-
-  const getTransitionBadgeColor = (transitionType: string) => {
-    switch (transitionType) {
-      case "RENEWAL":
-        return "bg-blue-100 text-blue-800 border-blue-200";
-      case "MIGRATION":
-        return "bg-purple-100 text-purple-800 border-purple-200";
-      case "PORTABILITY":
-        return "bg-orange-100 text-orange-800 border-orange-200";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
-    }
-  };
-
-  const getTransitionDisplayName = (transitionType: string) => {
-    switch (transitionType) {
-      case "RENEWAL":
-        return "RENEWAL";
-      case "MIGRATION":
-        return "INTERNAL PORTABILITY";
-      case "PORTABILITY":
-        return "PORTABILITY";
-      default:
-        return transitionType;
-    }
-  };
-
   const getStatusBadgeColor = (status: string) => {
     switch (status) {
       case "Fresh":
@@ -143,38 +102,6 @@ const PolicyHistorySheet: React.FC<PolicyHistorySheetProps> = ({
         return "Internal Portability";
       default:
         return status;
-    }
-  };
-
-  // Helper function to get relationship display name
-  const getRelationshipDisplayName = (item: {
-    relationship: string;
-    generation?: number;
-  }): string => {
-    if (item.relationship === "CURRENT") return "Latest Policy";
-    if (item.relationship === "PARENT") return "Parent Policy";
-    if (item.relationship === "CHILD") return "Child Policy";
-    if (item.relationship === "ANCESTOR") {
-      const generation = item.generation || 0;
-      if (generation === 2) return "Grandparent Policy";
-      if (generation === 3) return "Great-Grandparent Policy";
-      return `${generation}${getOrdinalSuffix(generation)} Generation Ancestor`;
-    }
-    return "Unknown";
-  };
-
-  // Helper function to get ordinal suffix
-  const getOrdinalSuffix = (num: number): string => {
-    if (num >= 11 && num <= 13) return "th";
-    switch (num % 10) {
-      case 1:
-        return "st";
-      case 2:
-        return "nd";
-      case 3:
-        return "rd";
-      default:
-        return "th";
     }
   };
 

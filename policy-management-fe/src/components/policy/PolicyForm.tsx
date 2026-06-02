@@ -125,10 +125,6 @@ const DEDUCTIBLE_OPTIONS: Record<string, number[]> = {
 };
 const HIDE_DEDUCTIBLE_FOR = ["ICICI LOMBARD"];
 
-<<<<<<< HEAD
-=======
-
->>>>>>> ad557664d3cc781693a63d983c62275dcb770300
 const PolicyForm: React.FC<PolicyFormProps> = ({ onSubmit, onClose }) => {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [policyNames, setPolicyNames] = useState<
@@ -297,7 +293,6 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ onSubmit, onClose }) => {
 
   // Extract watched values to simple variables for effect dependencies
   const wPremiumAmount = watch("premium_amount");
-  const wPolicyNameId = watch("policy_name_id");
   const wProposerDob = watch("proposer.date_of_birth");
   const wProposerFullName = watch("proposer.full_name");
   const wProposerGender = watch("proposer.gender");
@@ -306,17 +301,13 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ onSubmit, onClose }) => {
   const wSumInsured = watch("sum_insured");
   const wDeductibleStatus = watch("deductible_amount_status");
   const wPolicyCreationStatus = watch("policy_creation_status");
-<<<<<<< HEAD
   const wPolicyGroupId = watch("policy_group_id");
-=======
->>>>>>> ad557664d3cc781693a63d983c62275dcb770300
   const wStartDate = watch("start_date");
   const wTenureYears = watch("tenure_years");
 
   // Commission calculation function
   const calculateCommission = useCallback(async () => {
     const premiumAmount = wPremiumAmount;
-<<<<<<< HEAD
     const policyGroupId = wPolicyGroupId;
     const proposerDob = wProposerDob;
     const sumInsured = wSumInsured;
@@ -325,14 +316,6 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ onSubmit, onClose }) => {
     const policyGroupName = policyGroups.find((g) => g.id === policyGroupId)?.name;
 
     if (!policyGroupId || !proposerDob) {
-=======
-    const policyNameId = wPolicyNameId;
-    const sumInsured = wSumInsured;
-    const deductibleStatus = wDeductibleStatus;
-    const policyCreationStatus = wPolicyCreationStatus || "Fresh";
-
-    if (!policyNameId) {
->>>>>>> ad557664d3cc781693a63d983c62275dcb770300
       setCalculatedCommission({
         calculated_commission_amount: 0,
         base_percentage: 0,
@@ -344,24 +327,19 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ onSubmit, onClose }) => {
 
     const finalPremiumAmount = premiumAmount || 0;
     const finalSumInsured = sumInsured || 0;
-    const selectedPolicyNameStr = policyNames.find(pn => pn.id === policyNameId)?.name || '';
 
     try {
       const result = await commissionCalculationService.calculateCommission({
-<<<<<<< HEAD
         policy_group_id: policyGroupId,
         policy_group_name: policyGroupName,
-=======
-        policy_name_id: policyNameId,
-        policyName: selectedPolicyNameStr,
->>>>>>> ad557664d3cc781693a63d983c62275dcb770300
         policy_creation_status: policyCreationStatus,
+        proposer_dob: proposerDob,
         sum_insured: finalSumInsured,
         deductible_amount_status: deductibleStatus || false,
         premium_amount: finalPremiumAmount,
       });
 
-      setCalculatedCommission({ ...result, add_on_percentage: 0 });
+      setCalculatedCommission(result);
     } catch (error) {
       console.error("Error calculating commission:", error);
       setCalculatedCommission({
@@ -373,20 +351,12 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ onSubmit, onClose }) => {
     }
   }, [
     wPremiumAmount,
-<<<<<<< HEAD
     wPolicyGroupId,
     wProposerDob,
     wSumInsured,
     wDeductibleStatus,
     wPolicyCreationStatus,
     policyGroups,
-=======
-    wPolicyNameId,
-    wSumInsured,
-    wDeductibleStatus,
-    wPolicyCreationStatus,
-    policyNames,
->>>>>>> ad557664d3cc781693a63d983c62275dcb770300
   ]);
 
   // Calculate commission when relevant fields change
@@ -470,10 +440,7 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ onSubmit, onClose }) => {
         }
       }
 
-<<<<<<< HEAD
-      delete filteredData.commission_add_on_percentage;
-=======
->>>>>>> ad557664d3cc781693a63d983c62275dcb770300
+      delete (filteredData as Record<string, unknown>).commission_add_on_percentage;
       if (hideDeductible || !deductibleOptions) {
         delete filteredData.deductible_amount_status;
         delete filteredData.deductible_amount;
@@ -723,16 +690,7 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ onSubmit, onClose }) => {
       setValue("deductible_amount_status", false, { shouldValidate: true });
       setValue("deductible_amount", undefined, { shouldValidate: true });
     }
-<<<<<<< HEAD
   }, [selectedCompanyId, hideDeductible, deductibleOptions, setValue]);
-=======
-  }, [
-    selectedCompanyId,
-    hideDeductible,
-    deductibleOptions,
-    setValue,
-  ]);
->>>>>>> ad557664d3cc781693a63d983c62275dcb770300
 
   // Auto-calculate end date based on start date and tenure years
   useEffect(() => {

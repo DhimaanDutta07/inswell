@@ -22,11 +22,7 @@ import PolicyHistorySheet from "./PolicyHistorySheet";
 // import { format } from "date-fns";
 // import { PolicyGroup } from "../../types";
 import type { PolicyGroup } from '../../types/index';
-<<<<<<< HEAD
 import { useAuth } from '../../Context/AuthContext';
-=======
-import { useAuth } from "../../Context/AuthContext";
->>>>>>> ad557664d3cc781693a63d983c62275dcb770300
 
 // Custom hook for drag and drop
 const useDragAndDrop = (onFileSelect: (file: File) => void) => {
@@ -194,13 +190,7 @@ const PolicyList: React.FC<PolicyListProps> = ({
 }) => {
   const navigate = useNavigate();
   const { role } = useAuth();
-<<<<<<< HEAD
-  const canSeeCommission = role?.role_name === 'ADMIN';
-  const canDeletePolicy = role?.role_name === 'ADMIN';
-=======
-  // Commission visibility and policy deletion are restricted to admins.
-  const isAdmin = role?.role_name?.toUpperCase() === "ADMIN";
->>>>>>> ad557664d3cc781693a63d983c62275dcb770300
+  const isAdmin = role?.role_name?.toUpperCase() === 'ADMIN';
   const [policies, setPolicies] = useState<Policy[]>([]);
   const [loading, setLoading] = useState(true);
   const isLoading = externalLoading !== undefined ? externalLoading : loading;
@@ -1109,17 +1099,10 @@ const PolicyList: React.FC<PolicyListProps> = ({
                     <TableHead className="h-10 px-3 text-center font-semibold text-gray-700 text-xs w-[9%]">
                       Premium
                     </TableHead>
-<<<<<<< HEAD
-                    {canSeeCommission && (
+                    {isAdmin && (
                     <TableHead className="h-10 px-3 text-left font-semibold text-gray-700 text-xs w-[9%]">
                       Commission
                     </TableHead>
-=======
-                    {isAdmin && (
-                      <TableHead className="h-10 px-3 text-left font-semibold text-gray-700 text-xs w-[9%]">
-                        Commission
-                      </TableHead>
->>>>>>> ad557664d3cc781693a63d983c62275dcb770300
                     )}
                     <TableHead className="h-10 px-3 text-left font-semibold text-gray-700 text-xs w-[8%]">
                       Period
@@ -1306,22 +1289,12 @@ const PolicyList: React.FC<PolicyListProps> = ({
                             {formatCurrency(policy.premium_amount)}
                           </span>
                         </TableCell>
-<<<<<<< HEAD
-                        {canSeeCommission && (
+                        {isAdmin && (
                         <TableCell className="h-14 px-3 align-middle text-center">
                           <span className="text-xs font-semibold text-green-700">
                             {policy.calculated_commission_amount !== undefined && policy.calculated_commission_amount !== null ? formatCurrency(policy.calculated_commission_amount) : '-'}
                           </span>
                         </TableCell>
-=======
-                        {/* Commission (admins only) */}
-                        {isAdmin && (
-                          <TableCell className="h-14 px-3 align-middle text-center">
-                            <span className="text-xs font-semibold text-green-700">
-                              {policy.calculated_commission_amount !== undefined && policy.calculated_commission_amount !== null ? formatCurrency(policy.calculated_commission_amount) : '-'}
-                            </span>
-                          </TableCell>
->>>>>>> ad557664d3cc781693a63d983c62275dcb770300
                         )}
 
                         {/* Period */}
@@ -1491,11 +1464,7 @@ const PolicyList: React.FC<PolicyListProps> = ({
                                   History
                                 </DropdownMenuItem>
 
-<<<<<<< HEAD
-                                {canDeletePolicy && (
-=======
                                 {isAdmin && (
->>>>>>> ad557664d3cc781693a63d983c62275dcb770300
                                   <>
                                     <DropdownMenuSeparator className="my-0 border-gray-200" />
                                     <DropdownMenuItem

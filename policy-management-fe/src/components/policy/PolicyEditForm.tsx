@@ -642,7 +642,6 @@ export default function PolicyEditForm({ policyId, onSubmit, onClose }: PolicyEd
   const wStartDate = watch("start_date");
   const wTenureYears = watch("tenure_years");
   const wPremiumAmount = watch("premium_amount");
-  const wPolicyNameId = watch("policy_name_id");
   const wProposerDob = watch("proposer.date_of_birth");
   const wProposerGender = watch("proposer.gender");
   const wProposerSalutation = watch("proposer.proposer_salutation");
@@ -765,12 +764,11 @@ export default function PolicyEditForm({ policyId, onSubmit, onClose }: PolicyEd
   }, [
     calculateCommission,
     wPremiumAmount,
-    wPolicyNameId,
+    wPolicyGroupId,
     wProposerDob,
     wSumInsured,
     wDeductibleStatus,
     wPolicyCreationStatus,
-    wCommissionAddOn,
   ]);
 
   const onFormSubmit = async (data: PolicyFormData) => {
