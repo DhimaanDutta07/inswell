@@ -99,7 +99,6 @@ app.get('/api/files/material-receipts/images/:fileName', (req: Request, res: Res
 
   // Basic middleware
   const origin = process.env.FRONTEND_API || process.env.LOCALHOST_API;
-<<<<<<< HEAD
   app.use(cors({
     origin: (originReq, callback) => {
       // Allow no-origin (same-origin requests, curl, etc.)
@@ -109,27 +108,16 @@ app.get('/api/files/material-receipts/images/:fileName', (req: Request, res: Res
         "https://insurewelladvisory.in",
         "https://policy.mindrops.com",
         "https://policy-management-frontend-coral.vercel.app",
+        "https://inswell.vercel.app",
         "http://localhost:5173",
         "http://localhost:3001",
         "http://192.168.1.15:3001",
       ];
-      if (allowed.includes(originReq) || originReq.endsWith('.vercel.app')) {
+      if (allowed.includes(originReq) || originReq.endsWith(".vercel.app")) {
         return callback(null, true);
       }
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error("Not allowed by CORS"));
     },
-=======
-  app.use(cors({ 
-    origin: [
-      "https://insurewelladvisory.in",
-      "https://policy.mindrops.com",
-      "https://policy-management-frontend-coral.vercel.app", // ✅ production frontend
-      "https://inswell.vercel.app/",
-      "http://localhost:5173",
-      "http://localhost:3001",
-      "http://192.168.1.15:3001"
-    ],
->>>>>>> d40bc3b122c122a80732521f62a3364906773888
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization", "role"],
     credentials: true,
